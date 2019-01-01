@@ -1,6 +1,11 @@
 import React = require("react");
+import { FoxConnect } from "foxconnect";
 
-export class Client extends React.Component {
+export interface ClientProperties {
+    foxConnect: FoxConnect;
+}
+
+export class Client extends React.Component<ClientProperties,{}> {
     render() {
         return <span>client</span>;
     }
