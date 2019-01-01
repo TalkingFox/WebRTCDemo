@@ -59,3 +59,7 @@ typings/
 
 # next.js build output
 .next
+
+# not sharing my environment files. Sorry, everyone!
+src/environments/environment.prod.ts
+src/services/roomservice.service.ts
