@@ -9,3 +9,5 @@ node_modules/
 
 #output
 dist/
+
+src/environment.ts

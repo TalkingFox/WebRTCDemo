@@ -7,6 +7,7 @@
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/react-router-dom": "^4.3.1",
+    "foxconnect": "^0.0.3",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-router-dom": "^4.3.1"
@@ -17,7 +18,8 @@
     "typescript": "^3.2.2"
   },
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "build:dev": "webpack --watch"
   },
   "repository": {
     "type": "git",
