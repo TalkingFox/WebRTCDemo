@@ -1,8 +1,8 @@
 import React = require("react");
-import { FoxConnect } from 'foxconnect';
+import * as FoxConnect from 'foxconnect';
 
 export interface HostProperties {
-    foxConnect: FoxConnect;
+    host: FoxConnect.Host;
 }
 
 export interface HostState {
@@ -12,9 +12,9 @@ export interface HostState {
 export class Host extends React.Component<HostProperties, HostState> {
     constructor(props: HostProperties) {
         super(props);
-        this.state = {room: null};
+        this.state = { room: null };
         console.log('props', this.props);
-        this.props.foxConnect.createRoom().subscribe((room: string) => {
+        this.props.host.createRoom().then((room: string) => {
             this.setState({
                 room: room
             });
