@@ -1,6 +1,11 @@
 {
   "name": "web-rtc-demo",
   "version": "0.0.0",
+  "browser": {
+    "fs": false,
+    "path": false,
+    "tls": false
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -22,7 +27,7 @@
     "@angular/router": "^7.1.4",
     "core-js": "^2.5.4",
     "foxconnect": "^0.0.3",
-    "rxjs": "^6.0.0",
+    "rxjs": "6.2.2",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -32,7 +37,7 @@
     "@angular/language-service": "^6.0.3",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
+    "@types/node": "^10.12.18",
     "codelyzer": "~4.2.1",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
