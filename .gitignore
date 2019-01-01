@@ -62,4 +62,4 @@ typings/
 
 # not sharing my environment files. Sorry, everyone!
 src/environments/environment.prod.ts
-src/services/roomservice.service.ts
+src/environments/environment.ts
