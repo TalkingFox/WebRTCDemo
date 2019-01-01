@@ -1,11 +1,11 @@
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, Route } from 'react-router-dom';
 import React = require('react');
 import ReactDOM = require('react-dom');
-import { Home } from './components/home';
+import { RouterBase } from './components/router-base';
 
 ReactDOM.render(
     <HashRouter>
-        <Home></Home>
+        <RouterBase></RouterBase>
     </HashRouter>,
     document.getElementById('root')
 );

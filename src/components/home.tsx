@@ -8,8 +8,6 @@ export class Home extends React.Component {
         return  <div id="online" className="hidden">
                     <Link className="button" to="/host">Host Room</Link>
                     <Link className="button" to="/client">Join Room</Link>
-                    <Route path="/host" component={Host}/>
-                    <Route path="/client" component={Client}/>
                 </div>;
     }
 }
