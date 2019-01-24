@@ -17,11 +17,12 @@ export class Client extends React.Component<ClientProperties, ClientState> {
         this.joinRoom = this.joinRoom.bind(this);
     }
 
-    private joinRoom(): void {
+    private joinRoom(event: React.FormEvent): void {
         this.props.foxClient.joinRoom(this.state.roomName);
         this.props.foxClient.listenForMessages((message: string) => {
             console.log(message);
         });
+        event.preventDefault();
     }
 
     render() {

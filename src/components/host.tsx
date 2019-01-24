@@ -13,10 +13,13 @@ export class Host extends React.Component<HostProperties, HostState> {
     constructor(props: HostProperties) {
         super(props);
         this.state = { room: null };
-        console.log('props', this.props);
         this.props.host.createRoom().then((room: string) => {
             this.setState({
                 room: room
+            });
+            console.log(room);
+            this.props.host.listenForGuests((guest: string) => {
+                console.log('The esteemed guest '+guest+' has just joined us!');
             });
         });
     }

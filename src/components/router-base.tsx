@@ -16,11 +16,6 @@ export class RouterBase extends React.Component<{},ServiceState> {
     constructor(props: {}) {
         super(props);
         const options: FoxConnectOptions = {
-            awsAccessKey: environment.accessKey,
-            awsIotHost: environment.awsIot,
-            awsRegion: environment.awsRegion,
-            awsSecretKey: environment.secretKey,
-            clientId: Math.floor(Math.random() * 1000000 + 1).toString(),
             signalServer: environment.signalServer
         };
         const client = new FoxConnect.Client(options);
@@ -36,9 +31,7 @@ export class RouterBase extends React.Component<{},ServiceState> {
         return  <div>
                     <Route  path="/" 
                             exact={true}
-                            render={() => {
-                                return <Client foxClient={this.state.foxClient}></Client>
-                            }}
+                            component={Home}
                     />
                     <Route  path="/host" 
                             render={() => {
@@ -47,7 +40,9 @@ export class RouterBase extends React.Component<{},ServiceState> {
                         }
                     />
                     <Route  path="/client" 
-                            component={Client}
+                            render={() => {
+                                return <Client foxClient={this.state.foxClient}></Client>
+                            }}
                     />
                 </div>
     }
