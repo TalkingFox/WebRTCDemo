@@ -1,8 +1,8 @@
 import { Route } from "react-router";
 import * as React from 'react';
-import { Home } from "./components/home";
-import { Host } from "./components/host";
-import { Client } from "./components/client";
+import { Home } from "./components/home/home";
+import { Host } from "./components/host/host";
+import { Client } from "./components/client/client";
 import * as FoxConnect from 'foxconnect';
 import { environment } from "./environment";
 import { FoxConnectOptions } from "foxconnect/dist/models/foxConnectOptions";
