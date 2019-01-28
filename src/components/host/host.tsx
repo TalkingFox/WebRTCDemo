@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as FoxConnect from 'foxconnect';
+import './host.css';
 
 export interface HostProperties {
     host: FoxConnect.Host;
@@ -30,8 +31,10 @@ export class Host extends React.Component<HostProperties, HostState> {
     }
 
     render() {
-        return <div>
-                    <span>Room is {this.state.room}</span><br/>
+        return <div className="container">
+                <div className="banner">
+                    <span>Room: {this.state.room}</span><br/>
+                </div>
                     <button onClick={() => this.disconnect()}>Disconnect</button>
                 </div>
         ;
