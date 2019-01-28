@@ -1,10 +1,10 @@
 import { Route } from "react-router";
-import React = require("react");
-import { Home } from "./home";
-import { Host } from "./host";
-import { Client } from "./client";
+import * as React from 'react';
+import { Home } from "./components/home";
+import { Host } from "./components/host";
+import { Client } from "./components/client";
 import * as FoxConnect from 'foxconnect';
-import { environment } from "../environment";
+import { environment } from "./environment";
 import { FoxConnectOptions } from "foxconnect/dist/models/foxConnectOptions";
 
 export interface ServiceState {
@@ -12,7 +12,7 @@ export interface ServiceState {
     foxClient: FoxConnect.Client;
 }
 
-export class RouterBase extends React.Component<{},ServiceState> {
+export class App extends React.Component<{},ServiceState> {
     constructor(props: {}) {
         super(props);
         const options: FoxConnectOptions = {

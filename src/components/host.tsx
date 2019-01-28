@@ -1,4 +1,4 @@
-import React = require("react");
+import * as React from 'react';
 import * as FoxConnect from 'foxconnect';
 
 export interface HostProperties {
@@ -12,19 +12,28 @@ export interface HostState {
 export class Host extends React.Component<HostProperties, HostState> {
     constructor(props: HostProperties) {
         super(props);
-        this.state = { room: null };
+        this.state = { room: 'loading...' };
         this.props.host.createRoom().then((room: string) => {
             this.setState({
                 room: room
             });
             console.log(room);
             this.props.host.listenForGuests((guest: string) => {
-                console.log('The esteemed guest '+guest+' has just joined us!');
+                console.log('The esteemed guest ' + guest + ' has just joined us!');
             });
         });
     }
 
+    public disconnect(): void {
+        this.props.host.closeRoom();
+        console.log('disconnected');
+    }
+
     render() {
-        return <span>Room is {this.state.room || 'loading...'}</span>;
+        return <div>
+                    <span>Room is {this.state.room}</span><br/>
+                    <button onClick={() => this.disconnect()}>Disconnect</button>
+                </div>
+        ;
     }
 }
