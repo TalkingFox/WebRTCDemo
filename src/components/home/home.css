@@ -1,0 +1,11 @@
+.button {
+    display: inline-block;
+    min-width: 100px;
+    min-height: 100px;
+    color: gold;
+    border: 1px solid purple;
+    border-radius: 5px;
+    text-align: center;
+    margin-right: 5px;
+    text-decoration: none;
+}
