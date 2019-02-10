@@ -45,11 +45,13 @@ export class Host extends React.Component<HostProperties, HostState> {
             <div className="banner">
                 <span>Room: {this.state.room}</span><br />
             </div>
-            <button onClick={() => this.disconnect()}>Disconnect</button>
             <div className="messages">
             {
                 this.state.messages.map((message: string) => <p>{message}</p>)
             }
+            </div>
+            <div className="commands">
+                <button onClick={() => this.disconnect()}>Disconnect</button>
             </div>
         </div>
             ;

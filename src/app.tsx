@@ -6,6 +6,7 @@ import { Client } from "./components/client/client";
 import * as FoxConnect from 'foxconnect';
 import { environment } from "./environment";
 import { FoxConnectOptions } from "foxconnect/dist/models/foxConnectOptions";
+import './app.css';
 
 export interface ServiceState {
     foxHost: FoxConnect.Host;
@@ -28,7 +29,7 @@ export class App extends React.Component<{},ServiceState> {
     
 
     render() {
-        return  <div>
+        return  <div className="routeContainer">
                     <Route  path="/" 
                             exact={true}
                             component={Home}

@@ -1,21 +1,45 @@
+html {
+    height: 95%;
+    width: 95%;
+    margin: auto;
+}
+
 body {
     background-color: black;
     color: gold;
+    height: 100%;
 }
 
 .container {
     border: 1px solid purple;
     border-radius: 5px;
-    height: 95vh;
-    width: 95vw;
-    margin: auto;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .banner {
     width: 100%;
     background-color: purple;
     color: gold;
-    line-height: 24pt;
+    line-height: 3vh;
     text-align: center;
-    font-size: 24pt;
+    font-size: 3vh;
+    height: 5%;
+}
+
+.messages {
+    height: 75%;
+    border: 1px solid purple;
+}
+
+.commands {
+    height: 20%;
+    border: 1px solid purple;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
 }
