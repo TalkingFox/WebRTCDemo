@@ -64,6 +64,11 @@ button {
     transition: .25s;
   }
 
+  button:disabled {
+      text-decoration: line-through;
+      cursor: not-allowed;
+  }
+
   .sendMessage {
       width: 100%;
       display: flex;

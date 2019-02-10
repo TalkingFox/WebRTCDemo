@@ -9,11 +9,13 @@ export interface HostProperties {
 export interface HostState {
     room: string;
     messages: string[];
+    message?: string;
 }
 
 export class Host extends React.Component<HostProperties, HostState> {
     constructor(props: HostProperties) {
         super(props);
+        this.sendMessage = this.sendMessage.bind(this);
         this.state = { 
             room: 'loading...',
             messages: []
@@ -40,6 +42,11 @@ export class Host extends React.Component<HostProperties, HostState> {
         this.setState({messages: newMessages});
     }
 
+    private sendMessage(): void {
+        this.props.host.sendToAll(this.state.message);
+        this.print(this.state.message as string);
+    }
+
     render() {
         return <div className="container">
             <div className="banner">
@@ -47,11 +54,20 @@ export class Host extends React.Component<HostProperties, HostState> {
             </div>
             <div className="messages">
             {
-                this.state.messages.map((message: string) => <p>{message}</p>)
+                this.state.messages.map((message: string, index: number) => <p key={index}>{message}</p>)
             }
             </div>
             <div className="commands">
-                <button onClick={() => this.disconnect()}>Disconnect</button>
+                <div className="button-array">
+                    <button onClick={() => this.disconnect()}>Disconnect</button>
+                </div>
+                <div className="sendMessage">
+                    <textarea 
+                        value={this.state.message}
+                        onChange={(event) => this.setState({message: event.currentTarget.value})}
+                    ></textarea>
+                    <button onClick={this.sendMessage} disabled={this.state.message == null}>Send Message</button>
+                </div>
             </div>
         </div>
             ;

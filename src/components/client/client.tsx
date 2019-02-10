@@ -30,7 +30,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
                 this.print('connected');
             })
         this.props.foxClient.listenForMessages((message: string) => {
-            this.print(message);
+            this.print('Host said: ' + JSON.parse(message));
         });
         event.preventDefault();
     }
@@ -56,7 +56,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
             </div>
             <div className="messages">
             {
-                this.state.messages.map((message: string) => <p>{message}</p>)
+                this.state.messages.map((message: string, index: number) => <p key={index}>{message}</p>)
             }
             </div>
         </div>

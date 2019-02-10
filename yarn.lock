@@ -2846,9 +2846,9 @@ forwarded@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
 
-foxconnect@^0.0.28:
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/foxconnect/-/foxconnect-0.0.28.tgz#c2c6e23f30fb23e4d9e7d2a984bece07fe69f1c5"
+foxconnect@^0.0.30:
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/foxconnect/-/foxconnect-0.0.30.tgz#7b567ebdb0fe1e7110e50202d2fe398ea4b03a91"
   dependencies:
     "@types/simple-websocket" "^7.0.1"
     aws-iot-device-sdk "^2.2.1"
