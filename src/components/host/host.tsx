@@ -1,40 +1,57 @@
 import * as React from 'react';
 import * as FoxConnect from 'foxconnect';
 import './host.css';
+import { environment } from 'src/environment';
 
-export interface HostProperties {
-    host: FoxConnect.Host;
-}
+export interface HostProperties { }
 
 export interface HostState {
     room: string;
     messages: string[];
-    message?: string;
+    message: string;
 }
 
 export class Host extends React.Component<HostProperties, HostState> {
+    private host: FoxConnect.Host;
+
     constructor(props: HostProperties) {
         super(props);
         this.sendMessage = this.sendMessage.bind(this);
         this.state = { 
             room: 'loading...',
-            messages: []
+            messages: [],
+            message: ''
         };
-        this.props.host.createRoom().then((room: string) => {
+        this.host = new FoxConnect.Host({
+            signalServer: environment.signalServer,
+            onClientDisconnected: (clientId: string) => this.guestDisconnected(clientId),
+            onGuestJoined: (clientId: string) => this.guestJoined(clientId),
+            onMessageReceived: (clientId: string, message: string) => this.messageReceived(clientId, message)
+        });
+
+        this.host.createRoom().then((room: string) => {
             this.setState({
                 room: room
             });
             this.print('Reserved room:' + room);
-            this.props.host.listenForGuests((guest: string) => {
-                this.print('The esteemed guest ' + guest + ' has just joined us!');
-            });
-            this.props.host.listenForMessages((message: string) => this.print(message));
         });
     }
 
     public disconnect(): void {
-        this.props.host.closeRoom();
-        this.print('disconnected');
+        this.host.closeRoom();
+        this.print('Stopped accepting guests.');
+    }
+
+    private guestDisconnected(clientId: string): void {
+        this.print("client '" + clientId + "' disconnected");
+    }
+
+    private guestJoined(clientId: string): void {
+        this.print('The esteemed guest ' + clientId + ' has just joined us!');
+    }
+
+    private messageReceived(clientId: string, message: string): void {
+        this.print(message);
     }
 
     private print(message: string): void {
@@ -44,8 +61,9 @@ export class Host extends React.Component<HostProperties, HostState> {
     }
 
     private sendMessage(): void {
-        this.props.host.sendToAll(this.state.message);
+        this.host.sendToAll(this.state.message);
         this.print(this.state.message as string);
+        this.setState({message: ''});
     }
 
     render() {
@@ -67,7 +85,7 @@ export class Host extends React.Component<HostProperties, HostState> {
                         value={this.state.message}
                         onChange={(event) => this.setState({message: event.currentTarget.value})}
                     ></textarea>
-                    <button onClick={this.sendMessage} disabled={this.state.message == null}>Send Message</button>
+                    <button onClick={this.sendMessage} disabled={this.state.message.length === 0}>Send Message</button>
                 </div>
             </div>
         </div>

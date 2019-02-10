@@ -1,39 +1,45 @@
 import * as React from 'react';
 import * as FoxConnect from 'foxconnect';
+import { environment } from 'src/environment';
 
-export interface ClientProperties {
-    foxClient: FoxConnect.Client;
-}
+export interface ClientProperties { }
 
 export interface ClientState {
     room: string;
     isConnected: boolean;
     messages: string[];
-    message?: string;
+    message: string;
 }
 
 export class Client extends React.Component<ClientProperties, ClientState> {
+
+    private foxClient: FoxConnect.Client;
 
     constructor(properties: ClientProperties) {
         super(properties);
         this.state = { 
             room: '',
             isConnected: false,
-            messages: []
+            messages: [],
+            message: ''
         };
+        this.foxClient = new FoxConnect.Client({
+            onDisconnect: () => this.disconnect(),
+            onMessageReceived: (message: string) => {
+                this.print('Host said: ' + JSON.parse(message));
+            },
+            signalServer: environment.signalServer
+        });
     }
 
     private joinRoom(event: React.FormEvent): void {
-        this.props.foxClient.joinRoom(this.state.room)
+        this.foxClient.joinRoom(this.state.room)
             .then(() => {
                 this.setState({ isConnected: true});
                 this.print('connected');
             }).catch((reason: any) => {
                 this.print('Failed to join room: ' + JSON.stringify(reason));
             });
-        this.props.foxClient.listenForMessages((message: string) => {
-            this.print('Host said: ' + JSON.parse(message));
-        });
         event.preventDefault();
     }
 
@@ -45,12 +51,13 @@ export class Client extends React.Component<ClientProperties, ClientState> {
 
     private disconnect(): void {
         this.print('disconnected');
-        this.props.foxClient.leaveRoom();
+        this.foxClient.leaveRoom();
     }
 
     private sendMessage(message: string): void {
-        this.props.foxClient.send(message);
-        this.setState({message: undefined});
+        this.foxClient.send(message);
+        this.print('You said: ' + message);
+        this.setState({message: ''});
     }
 
     render() {
@@ -81,7 +88,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
                         onChange={(event) => this.setState({message: event.currentTarget.value})}
                     ></textarea>
                     <button onClick={() => this.sendMessage(this.state.message as string)} 
-                            disabled={this.state.message == null}>Send Message</button>
+                            disabled={this.state.message.length === 0}>Send Message</button>
                 </div>
             </div>
         </div>
