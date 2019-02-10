@@ -8,35 +8,50 @@ export interface HostProperties {
 
 export interface HostState {
     room: string;
+    messages: string[];
 }
 
 export class Host extends React.Component<HostProperties, HostState> {
     constructor(props: HostProperties) {
         super(props);
-        this.state = { room: 'loading...' };
+        this.state = { 
+            room: 'loading...',
+            messages: []
+        };
         this.props.host.createRoom().then((room: string) => {
             this.setState({
                 room: room
             });
-            console.log(room);
+            this.print('Reserved room:' + room);
             this.props.host.listenForGuests((guest: string) => {
-                console.log('The esteemed guest ' + guest + ' has just joined us!');
+                this.print('The esteemed guest ' + guest + ' has just joined us!');
             });
         });
     }
 
     public disconnect(): void {
         this.props.host.closeRoom();
-        console.log('disconnected');
+        this.print('disconnected');
+    }
+
+    private print(message: string): void {
+        const newMessages = this.state.messages.slice(0);
+        newMessages.push(message);
+        this.setState({messages: newMessages});
     }
 
     render() {
         return <div className="container">
-                <div className="banner">
-                    <span>Room: {this.state.room}</span><br/>
-                </div>
-                    <button onClick={() => this.disconnect()}>Disconnect</button>
-                </div>
-        ;
+            <div className="banner">
+                <span>Room: {this.state.room}</span><br />
+            </div>
+            <button onClick={() => this.disconnect()}>Disconnect</button>
+            <div className="messages">
+            {
+                this.state.messages.map((message: string) => <p>{message}</p>)
+            }
+            </div>
+        </div>
+            ;
     }
 }
