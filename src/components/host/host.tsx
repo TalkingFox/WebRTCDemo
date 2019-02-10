@@ -28,6 +28,7 @@ export class Host extends React.Component<HostProperties, HostState> {
             this.props.host.listenForGuests((guest: string) => {
                 this.print('The esteemed guest ' + guest + ' has just joined us!');
             });
+            this.props.host.listenForMessages((message: string) => this.print(message));
         });
     }
 
