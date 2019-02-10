@@ -35,11 +35,43 @@ body {
 }
 
 .commands {
+    min-height: 125px;
     height: 20%;
     border: 1px solid purple;
+    display: flex;
+    flex-direction: column;
 }
 
 #root {
     height: 100%;
     width: 100%;
 }
+
+button {
+    background-color: black;
+    color: purple;
+    border: solid 1px purple;
+    min-width: 50px;
+    min-height: 50px;
+    margin: 5px;
+    transition: .25s;
+  }
+  
+  button:hover {
+    background-color: purple;
+    color: gold;
+    cursor: pointer;
+    transition: .25s;
+  }
+
+  .sendMessage {
+      width: 100%;
+      display: flex;
+      flex-grow: 1;
+  }
+
+  .sendMessage textarea {
+      resize: none;
+      margin: 5px;
+      flex-grow: 1;
+  }
