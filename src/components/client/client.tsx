@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as FoxConnect from 'foxconnect';
 import { environment } from 'src/environment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export interface ClientProperties { }
 
@@ -9,6 +10,7 @@ export interface ClientState {
     isConnected: boolean;
     messages: string[];
     message: string;
+    isJoiningRoom: boolean;
 }
 
 export class Client extends React.Component<ClientProperties, ClientState> {
@@ -21,7 +23,8 @@ export class Client extends React.Component<ClientProperties, ClientState> {
             room: '',
             isConnected: false,
             messages: [],
-            message: ''
+            message: '',
+            isJoiningRoom: false
         };
         this.foxClient = new FoxConnect.Client({
             onDisconnect: () => this.disconnect(),
@@ -33,6 +36,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
     }
 
     private joinRoom(event: React.FormEvent): void {
+        this.setState({isJoiningRoom: true});
         this.foxClient.joinRoom(this.state.room)
             .then(() => {
                 this.setState({ isConnected: true});
@@ -65,17 +69,21 @@ export class Client extends React.Component<ClientProperties, ClientState> {
             <div className="banner">
                 <span hidden={!this.state.isConnected}>Room: {this.state.room}</span>
                 <form hidden={this.state.isConnected} onSubmit={(event: React.FormEvent) => this.joinRoom(event)}>
-                <label>Join Room:
+                <label>Join Room 
                         <input type="text"
                         value={this.state.room}
                         onChange={(event) => this.setState({ room: event.currentTarget.value })} />
                 </label>
-                <input type="submit" value="Join" />
+                <button type="submit" disabled={this.state.isJoiningRoom}>
+                {
+                    this.state.isJoiningRoom ? <FontAwesomeIcon icon='circle-notch' spin/> : 'Join Room'
+                }
+                </button>
             </form>
             </div>
             <div className="messages">
             {
-                this.state.messages.map((message: string, index: number) => <p key={index}>{message}</p>)
+                this.state.messages.map((message: string, index: number) => <p key={index}>{index}:{message}</p>)
             }
             </div>
             <div className="commands">

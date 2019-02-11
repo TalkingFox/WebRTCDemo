@@ -52,7 +52,7 @@ button {
     color: purple;
     border: solid 1px purple;
     min-width: 50px;
-    min-height: 50px;
+    min-height: 25px;
     margin: 5px;
     transition: .25s;
   }

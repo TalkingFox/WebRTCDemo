@@ -73,12 +73,12 @@ export class Host extends React.Component<HostProperties, HostState> {
             </div>
             <div className="messages">
             {
-                this.state.messages.map((message: string, index: number) => <p key={index}>{message}</p>)
+                this.state.messages.map((message: string, index: number) => <p key={index}>{index}:{message}</p>)
             }
             </div>
             <div className="commands">
                 <div className="button-array">
-                    <button onClick={() => this.disconnect()}>Disconnect</button>
+                    <button onClick={() => this.disconnect()}>Close Room</button>
                 </div>
                 <div className="sendMessage">
                     <textarea 
