@@ -9,6 +9,7 @@ export interface HostState {
     room: string;
     messages: string[];
     message: string;
+    guests: Map<string,string>
 }
 
 export class Host extends React.Component<HostProperties, HostState> {
@@ -20,7 +21,8 @@ export class Host extends React.Component<HostProperties, HostState> {
         this.state = { 
             room: 'loading...',
             messages: [],
-            message: ''
+            message: '',
+            guests: new Map<string,string>()
         };
         this.host = new FoxConnect.Host({
             signalServer: environment.signalServer,
@@ -79,6 +81,7 @@ export class Host extends React.Component<HostProperties, HostState> {
             <div className="commands">
                 <div className="button-array">
                     <button onClick={() => this.disconnect()}>Close Room</button>
+                    <button>Rename</button>
                 </div>
                 <div className="sendMessage">
                     <textarea 

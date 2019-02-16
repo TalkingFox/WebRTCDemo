@@ -89,6 +89,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
             <div className="commands">
                 <div className="button-array">
                     <button onClick={() => this.disconnect()}>Disconnect</button>
+                    <button>Rename</button>
                 </div>
                 <div className="sendMessage">
                     <textarea 
