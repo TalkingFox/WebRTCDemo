@@ -15,7 +15,8 @@ export interface HostState {
     messages: string[];
     message: string;
     guests: Map<string,string>,
-    hostId?: string
+    hostId?: string,
+    isSending1000: boolean;
 }
 
 export class Host extends React.Component<HostProperties, HostState> {
@@ -28,7 +29,8 @@ export class Host extends React.Component<HostProperties, HostState> {
             room: 'loading...',
             messages: [],
             message: '',
-            guests: new Map<string,string>()
+            guests: new Map<string,string>(),
+            isSending1000: false
         };
         this.host = new FoxConnect.Host({
             signalServer: environment.signalServer,
@@ -118,6 +120,23 @@ export class Host extends React.Component<HostProperties, HostState> {
         this.publishMessage(this.state.hostId || 'host', this.state.message);
     }
 
+    private send1000(): void {
+        if (this.state.isSending1000) {
+            return;
+        }
+        this.setState({
+            isSending1000: true
+        });
+        let count = 0;
+        const id = setInterval(() => {
+            this.publishMessage(this.state.hostId || 'host', 'Load test message: ' + (count + 1));
+            if (++count === 1000) {
+                this.setState({isSending1000: false});
+                clearInterval(id);
+            }
+        }, 100);
+    }
+
     private renameSelf(): void {
         const newName = window.prompt('Enter a new name:', this.state.hostId);
         if (!newName) {
@@ -144,6 +163,7 @@ export class Host extends React.Component<HostProperties, HostState> {
                 <div className="button-array">
                     <button onClick={() => this.disconnect()}>Close Room</button>
                     <button onClick={() => this.renameSelf()}>Rename</button>
+                    <button onClick={() => this.send1000()}>Send 1000 Messages</button>
                 </div>
                 <div className="sendMessage">
                     <textarea 

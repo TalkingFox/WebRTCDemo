@@ -15,6 +15,7 @@ export interface ClientState {
     messages: string[];
     message: string;
     isJoiningRoom: boolean;
+    isSending1000: boolean;
 }
 
 export class Client extends React.Component<ClientProperties, ClientState> {
@@ -29,7 +30,8 @@ export class Client extends React.Component<ClientProperties, ClientState> {
             isConnected: false,
             messages: [],
             message: '',
-            isJoiningRoom: false
+            isJoiningRoom: false,
+            isSending1000: false
         };
         this.foxClient = new FoxConnect.Client({
             onDisconnect: () => this.disconnect(),
@@ -95,7 +97,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
     }
 
     private sendMessage(message: string): void {
-        if (this.state.message.length === 0) {
+        if (message.length === 0) {
             return;
         }
         const data = new SendMessage(message);
@@ -103,6 +105,23 @@ export class Client extends React.Component<ClientProperties, ClientState> {
         this.setState({
             message: ''
         });
+    }
+
+    private send1000(): void {
+        if (this.state.isSending1000) {
+            return;
+        }
+        this.setState({
+            isSending1000: true
+        });
+        let count = 0;
+        const id = setInterval(() => {
+            this.sendMessage('Load test message: ' + (count + 1));
+            if (++count === 1000) {
+                this.setState({isSending1000: false});
+                clearInterval(id);
+            }
+        }, 100);
     }
 
     render() {
@@ -133,6 +152,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
                 <div className="button-array">
                     <button onClick={() => this.disconnect()}>Disconnect</button>
                     <button onClick={() => this.renameSelf()}>Rename</button>
+                    <button onClick={() => this.send1000()}>Send 1000 Messages</button>
                 </div>
                 <div className="sendMessage">
                     <textarea
