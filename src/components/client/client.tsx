@@ -48,8 +48,16 @@ export class Client extends React.Component<ClientProperties, ClientState> {
                 this.print('connected');
             }).catch((reason: any) => {
                 this.print('Failed to join room: ' + JSON.stringify(reason));
+                this.setState({isJoiningRoom: false});
             });
         event.preventDefault();
+    }
+
+    private onMessageInput(event: React.KeyboardEvent<HTMLTextAreaElement>): void {
+        if (event.key === 'Enter') {
+            this.sendMessage(this.state.message);
+            event.preventDefault();
+        }
     }
 
     private parseMessage(message: string): void {
@@ -62,7 +70,6 @@ export class Client extends React.Component<ClientProperties, ClientState> {
             default:
                 this.print('Host sent unrecognized event: ' + message);
         }
-        // this.print('Host said: ' + JSON.parse(message));
     }
 
     private print(message: string): void {
@@ -88,8 +95,14 @@ export class Client extends React.Component<ClientProperties, ClientState> {
     }
 
     private sendMessage(message: string): void {
+        if (this.state.message.length === 0) {
+            return;
+        }
         const data = new SendMessage(message);
         this.foxClient.send(data);
+        this.setState({
+            message: ''
+        });
     }
 
     render() {
@@ -125,6 +138,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
                     <textarea
                         value={this.state.message}
                         onChange={(event) => this.setState({ message: event.currentTarget.value })}
+                        onKeyPress={(event) => this.onMessageInput(event)}
                     ></textarea>
                     <button onClick={() => this.sendMessage(this.state.message as string)}
                         disabled={this.state.message.length === 0}>Send Message</button>

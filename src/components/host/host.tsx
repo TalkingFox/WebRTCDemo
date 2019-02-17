@@ -64,6 +64,13 @@ export class Host extends React.Component<HostProperties, HostState> {
         });
     }
 
+    private onMessageInput(event: React.KeyboardEvent<HTMLTextAreaElement>): void {
+        if (event.key === 'Enter') {
+            this.sendMessage();
+            event.preventDefault();
+        }
+    }
+
     private messageReceived(clientId: string, message: string): void {
         const data = JSON.parse(message) as Message<any>;
         switch (data.type) {
@@ -102,6 +109,12 @@ export class Host extends React.Component<HostProperties, HostState> {
     }
 
     private sendMessage(): void {
+        if (this.state.message.length === 0) {
+            return;
+        }
+        this.setState({
+            message: ''
+        });
         this.publishMessage(this.state.hostId || 'host', this.state.message);
     }
 
@@ -136,6 +149,7 @@ export class Host extends React.Component<HostProperties, HostState> {
                     <textarea 
                         value={this.state.message}
                         onChange={(event) => this.setState({message: event.currentTarget.value})}
+                        onKeyPress={(event) => this.onMessageInput(event)}
                     ></textarea>
                     <button onClick={() => this.sendMessage()} disabled={this.state.message.length === 0}>Send Message</button>
                 </div>
