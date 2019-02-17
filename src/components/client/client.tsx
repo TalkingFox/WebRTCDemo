@@ -2,6 +2,9 @@ import * as React from 'react';
 import * as FoxConnect from 'foxconnect';
 import { environment } from 'src/environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { SendMessage } from 'src/models/send-message';
+import { Message, MessageType } from 'src/models/message';
+import { MessagePublished } from 'src/models/message-published';
 
 export interface ClientProperties { }
 
@@ -29,7 +32,7 @@ export class Client extends React.Component<ClientProperties, ClientState> {
         this.foxClient = new FoxConnect.Client({
             onDisconnect: () => this.disconnect(),
             onMessageReceived: (message: string) => {
-                this.print('Host said: ' + JSON.parse(message));
+                this.parseMessage(message);
             },
             signalServer: environment.signalServer
         });
@@ -47,6 +50,19 @@ export class Client extends React.Component<ClientProperties, ClientState> {
         event.preventDefault();
     }
 
+    private parseMessage(message: string): void {
+        const data = JSON.parse(message) as Message<any>;
+        switch (data.type) {
+            case MessageType.MessagePublished:
+                const newData = data as MessagePublished;
+                this.print(newData.body.user + ': '+newData.body.message);
+                break;
+            default:
+            this.print('Host sent unrecognized event: '+message);
+        }
+        // this.print('Host said: ' + JSON.parse(message));
+    }
+
     private print(message: string): void {
         const newMessages = this.state.messages.slice(0);
         newMessages.push(message);
@@ -59,9 +75,8 @@ export class Client extends React.Component<ClientProperties, ClientState> {
     }
 
     private sendMessage(message: string): void {
-        this.foxClient.send(message);
-        this.print('You said: ' + message);
-        this.setState({message: ''});
+        const data = new SendMessage(message);
+        this.foxClient.send(data);
     }
 
     render() {

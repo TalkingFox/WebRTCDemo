@@ -2,6 +2,10 @@ import * as React from 'react';
 import * as FoxConnect from 'foxconnect';
 import './host.css';
 import { environment } from 'src/environment';
+import { Message, MessageType } from 'src/models/message';
+import { SendMessage } from 'src/models/send-message';
+import { MessagePublished } from 'src/models/message-published';
+import { RoomCreatedResponse } from 'foxconnect/dist/models/roomCreatedResponse';
 
 export interface HostProperties { }
 
@@ -9,7 +13,8 @@ export interface HostState {
     room: string;
     messages: string[];
     message: string;
-    guests: Map<string,string>
+    guests: Map<string,string>,
+    hostId?: string
 }
 
 export class Host extends React.Component<HostProperties, HostState> {
@@ -17,7 +22,6 @@ export class Host extends React.Component<HostProperties, HostState> {
 
     constructor(props: HostProperties) {
         super(props);
-        this.sendMessage = this.sendMessage.bind(this);
         this.state = { 
             room: 'loading...',
             messages: [],
@@ -31,11 +35,12 @@ export class Host extends React.Component<HostProperties, HostState> {
             onMessageReceived: (clientId: string, message: string) => this.messageReceived(clientId, message)
         });
 
-        this.host.createRoom().then((room: string) => {
+        this.host.createRoom().then((response: RoomCreatedResponse) => {
             this.setState({
-                room: room
+                room: response.room,
+                hostId: response.host_id
             });
-            this.print('Reserved room:' + room);
+            this.print('Reserved room:' + response.room + 'Your id is '+response.host_id);
         });
     }
 
@@ -50,10 +55,33 @@ export class Host extends React.Component<HostProperties, HostState> {
 
     private guestJoined(clientId: string): void {
         this.print('The esteemed guest ' + clientId + ' has just joined us!');
+        const guests = new Map<string,string>(this.state.guests);
+        guests.set(clientId, clientId);
+        this.setState({
+            guests: guests
+        });
     }
 
     private messageReceived(clientId: string, message: string): void {
-        this.print(message);
+        const data = JSON.parse(message) as Message<any>;
+        const user = this.state.guests.get(clientId);
+        switch (data.type) {
+            case MessageType.SendMessage:
+                this.publishMessage(clientId, (data as SendMessage).body);
+                break;
+            default:
+                this.print(user + ': Sent unrecognized event: ' + message);
+        }
+    }
+
+    private publishMessage(clientId: string, message: string): void {
+        const user = this.state.guests.get(clientId) || clientId;
+        const publish = new MessagePublished({
+            message: message,
+            user: user
+        });
+        this.host.sendToAll(publish);
+        this.print(user + ': ' + message);
     }
 
     private print(message: string): void {
@@ -63,9 +91,7 @@ export class Host extends React.Component<HostProperties, HostState> {
     }
 
     private sendMessage(): void {
-        this.host.sendToAll(this.state.message);
-        this.print(this.state.message as string);
-        this.setState({message: ''});
+        this.publishMessage(this.state.hostId || 'host', this.state.message);
     }
 
     render() {
@@ -88,7 +114,7 @@ export class Host extends React.Component<HostProperties, HostState> {
                         value={this.state.message}
                         onChange={(event) => this.setState({message: event.currentTarget.value})}
                     ></textarea>
-                    <button onClick={this.sendMessage} disabled={this.state.message.length === 0}>Send Message</button>
+                    <button onClick={() => this.sendMessage()} disabled={this.state.message.length === 0}>Send Message</button>
                 </div>
             </div>
         </div>
