@@ -6,6 +6,7 @@ import { Message, MessageType } from 'src/models/message';
 import { SendMessage } from 'src/models/send-message';
 import { MessagePublished } from 'src/models/message-published';
 import { RoomCreatedResponse } from 'foxconnect/dist/models/roomCreatedResponse';
+import { RenameSelf } from 'src/models/rename-self';
 
 export interface HostProperties { }
 
@@ -19,6 +20,7 @@ export interface HostState {
 
 export class Host extends React.Component<HostProperties, HostState> {
     private host: FoxConnect.Host;
+    private latestMessage: HTMLDivElement;
 
     constructor(props: HostProperties) {
         super(props);
@@ -64,13 +66,21 @@ export class Host extends React.Component<HostProperties, HostState> {
 
     private messageReceived(clientId: string, message: string): void {
         const data = JSON.parse(message) as Message<any>;
-        const user = this.state.guests.get(clientId);
         switch (data.type) {
             case MessageType.SendMessage:
                 this.publishMessage(clientId, (data as SendMessage).body);
                 break;
+            case MessageType.RenameSelf:
+                const guests = new Map<string,string>(this.state.guests);
+                const newName = (data as RenameSelf).body;
+                guests.set(clientId, newName);
+                this.setState({
+                    guests: guests
+                });
+                this.publishMessage(newName, clientId + 'is now '+newName);
+                break;
             default:
-                this.print(user + ': Sent unrecognized event: ' + message);
+                this.print(clientId + ': Sent unrecognized event: ' + message);
         }
     }
 
@@ -88,10 +98,21 @@ export class Host extends React.Component<HostProperties, HostState> {
         const newMessages = this.state.messages.slice(0);
         newMessages.push(message);
         this.setState({messages: newMessages});
+        this.latestMessage.scrollIntoView({behavior: 'smooth'});
     }
 
     private sendMessage(): void {
         this.publishMessage(this.state.hostId || 'host', this.state.message);
+    }
+
+    private renameSelf(): void {
+        const newName = window.prompt('Enter a new name:', this.state.hostId);
+        if (!newName) {
+            return;
+        }
+        this.setState({
+            hostId: newName
+        });
     }
 
     render() {
@@ -103,11 +124,13 @@ export class Host extends React.Component<HostProperties, HostState> {
             {
                 this.state.messages.map((message: string, index: number) => <p key={index}>{index}:{message}</p>)
             }
+            <div ref={(element) => { this.latestMessage = element as HTMLDivElement}}>
+            </div>
             </div>
             <div className="commands">
                 <div className="button-array">
                     <button onClick={() => this.disconnect()}>Close Room</button>
-                    <button>Rename</button>
+                    <button onClick={() => this.renameSelf()}>Rename</button>
                 </div>
                 <div className="sendMessage">
                     <textarea 
