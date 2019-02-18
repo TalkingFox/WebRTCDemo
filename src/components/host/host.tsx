@@ -36,7 +36,12 @@ export class Host extends React.Component<HostProperties, HostState> {
             signalServer: environment.signalServer,
             onClientDisconnected: (clientId: string) => this.guestDisconnected(clientId),
             onGuestJoined: (clientId: string) => this.guestJoined(clientId),
-            onMessageReceived: (clientId: string, message: string) => this.messageReceived(clientId, message)
+            onMessageReceived: (clientId: string, message: string) => this.messageReceived(clientId, message),
+            onMessageFailed: (client: string, error: any) => {
+                this.print('Failed to send message to ['+client+']. Considering them disconnected.');
+                this.print('Error: '+error);
+                this.host.kickGuest(client);
+            }
         });
 
         this.host.createRoom().then((response: RoomCreatedResponse) => {

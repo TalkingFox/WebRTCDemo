@@ -22,7 +22,7 @@ resource "null_resource" "upload_files" {
   ]
 
   provisioner "local-exec" {
-    command = "aws s3 sync ../build s3://${local.s3_bucket}/${local.site_path}/"
+    command = "aws s3 sync ../build s3://${local.s3_bucket}/${local.site_path}/ --acl public-read"
   }
 }
 

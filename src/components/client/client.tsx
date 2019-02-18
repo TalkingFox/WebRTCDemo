@@ -38,6 +38,9 @@ export class Client extends React.Component<ClientProperties, ClientState> {
             onMessageReceived: (message: string) => {
                 this.parseMessage(message);
             },
+            onMessageFailed: (error) => {
+                alert(error);
+            },
             signalServer: environment.signalServer
         });
     }
